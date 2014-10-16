@@ -14,8 +14,8 @@ get '/' do
     cals = Icalendar.parse(response.body)
     cal = cals.first
         
-    @current_location = current_event(cal).summary
-    @next_travel_date = next_event(cal).try(:dtstart)
+    @current_event = current_event(cal)
+    @next_event = next_event(cal)
     
     haml :index    
   else
@@ -55,7 +55,11 @@ __END__
   = yield
 
 @@index
-.container
-  %h1= @current_location
-  - if @next_travel_date
-    %p.next= @next_travel_date.strftime("until %e.%-m.%Y")
+.container   
+  - if @current_event
+    %h1= @current_event.summary
+  - else
+    %h1 Ask Chris
+    
+  - if @next_event
+    %p.next= @next_event.dtstart.strftime("until %e.%-m.%Y")
