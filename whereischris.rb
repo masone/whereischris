@@ -15,7 +15,7 @@ get '/' do
     cal = cals.first
         
     @current_location = current_event(cal).summary
-    @next_travel_date = next_event(cal).dtstart
+    @next_travel_date = next_event(cal).try(:dtstart)
     
     haml :index    
   else
@@ -57,4 +57,5 @@ __END__
 @@index
 .container
   %h1= @current_location
-  %p.next= @next_travel_date.strftime("until %e.%-m.%Y")
+  - if @next_travel_date
+    %p.next= @next_travel_date.strftime("until %e.%-m.%Y")
